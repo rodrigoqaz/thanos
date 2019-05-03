@@ -9,19 +9,7 @@ library(shinydashboard)
 # Registra a key api do google
 register_google("AIzaSyASRXFasfwT0Pz-VZXhnVeGzgbkkCYJJT4")
 
-# Pega os dados de marcadores no banco
-con = dbConnect(RMySQL::MySQL(), 
-                user='groot', 
-                password='123456', 
-                dbname='endgame', 
-                host='35.238.104.169')
 
-query <- 'select * from THANOS'
-
-res <- dbSendQuery(con, query)
-df_marcadores <- dbFetch(res)
-
-dbDisconnect(con)
 
 
 # Gera a UI
@@ -46,6 +34,20 @@ server <- shinyServer(function(input, output, session) {
   
   # Cria um data frame com as informações dos marcadores que foram criados:
   #dat <- reactiveValues(circs = data.frame(lng=numeric(), lat=numeric()))
+  
+  # Pega os dados de marcadores no banco
+  con = dbConnect(RMySQL::MySQL(), 
+                  user='groot', 
+                  password='123456', 
+                  dbname='endgame', 
+                  host='35.238.104.169')
+  
+  query <- 'select * from THANOS'
+  
+  res <- dbSendQuery(con, query)
+  df_marcadores <- dbFetch(res)
+  
+  dbDisconnect(con)
   
   # Plota o mapa inicial
   output$map <- renderLeaflet({
